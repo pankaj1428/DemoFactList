@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DemoFactList</string>
+    <string name="network_error">Please check network connection: Pull to refresh</string>
 </resources>

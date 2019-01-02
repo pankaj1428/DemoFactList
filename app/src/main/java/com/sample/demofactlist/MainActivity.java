@@ -10,18 +10,21 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.sample.demofactlist.Adapter.FactAdapter;
 import com.sample.demofactlist.Model.FactList;
 import com.sample.demofactlist.ViewModel.FactsViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private String TAG = "MainActivity";
 
+    private FactAdapter factAdapter;
     private ActionBar actionBar;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        initList();
                     }
                 });
             }
@@ -61,6 +64,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initList(){
+        swipeRefreshLayout.setRefreshing(true);
+
+        if(!isNetworkAvailable()){
+            Log.e(TAG,"is Network:"+isNetworkAvailable());
+            swipeRefreshLayout.setRefreshing(false);
+            recyclerView.setVisibility(View.GONE);
+            errorTextView.setVisibility(View.VISIBLE);
+            errorTextView.setText(getResources().getText(R.string.network_error));
+
+            return;
+        }
 
         FactsViewModel model = ViewModelProviders.of(this).get(FactsViewModel.class);
         model.observeUsers(this,
@@ -75,14 +89,28 @@ public class MainActivity extends AppCompatActivity {
                         else{
                             recyclerView.setVisibility(View.VISIBLE);
                             errorTextView.setVisibility(View.GONE);
+
+                            updateRecyclerView(facts);
                         }
-
-
                     }
                 }
         );
     }
 
+    private void updateRecyclerView(final FactList factList) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                actionBar.setTitle(factList.getTitle());
+
+                factAdapter = new FactAdapter(MainActivity.this, factList.getRows());
+
+                recyclerView.setAdapter(factAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            }
+        });
+    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
