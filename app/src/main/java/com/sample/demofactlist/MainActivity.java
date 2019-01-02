@@ -61,18 +61,29 @@ public class MainActivity extends AppCompatActivity {
                 android.R.color.holo_red_light);
 
         initList();
+
     }
 
-    private void initList(){
-        swipeRefreshLayout.setRefreshing(true);
+    // method is made public for testing
+    public void initList(){
+
+        EspressoIdlingResouce.increment();
 
         if(!isNetworkAvailable()){
             Log.e(TAG,"is Network:"+isNetworkAvailable());
-            swipeRefreshLayout.setRefreshing(false);
-            recyclerView.setVisibility(View.GONE);
-            errorTextView.setVisibility(View.VISIBLE);
-            errorTextView.setText(getResources().getText(R.string.network_error));
 
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(false);
+                    recyclerView.setVisibility(View.GONE);
+                    errorTextView.setVisibility(View.VISIBLE);
+                    errorTextView.setText(getResources().getText(R.string.network_error));
+                }
+            });
+
+
+            EspressoIdlingResouce.decrement();
             return;
         }
 
@@ -81,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 new Observer<FactList>() {
                     @Override
                     public void onChanged(@Nullable FactList facts) {
+                        EspressoIdlingResouce.decrement();
                         swipeRefreshLayout.setRefreshing(false);
                         if(facts == null){
                             recyclerView.setVisibility(View.GONE);
