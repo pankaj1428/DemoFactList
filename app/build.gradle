@@ -32,4 +32,8 @@ dependencies {
 
     // to convert JSON into java object type
     implementation 'com.google.code.gson:gson:2.2.4'
+
+    // for ViewModel
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "android.arch.lifecycle:viewmodel:1.1.1"
 }

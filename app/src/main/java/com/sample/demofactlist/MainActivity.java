@@ -1,14 +1,21 @@
 package com.sample.demofactlist;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
+
+import com.sample.demofactlist.Model.FactList;
+import com.sample.demofactlist.ViewModel.FactsViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +57,30 @@ public class MainActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        initList();
+    }
+
+    private void initList(){
+
+        FactsViewModel model = ViewModelProviders.of(this).get(FactsViewModel.class);
+        model.observeUsers(this,
+                new Observer<FactList>() {
+                    @Override
+                    public void onChanged(@Nullable FactList facts) {
+                        swipeRefreshLayout.setRefreshing(false);
+                        if(facts == null){
+                            recyclerView.setVisibility(View.GONE);
+                            errorTextView.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            recyclerView.setVisibility(View.VISIBLE);
+                            errorTextView.setVisibility(View.GONE);
+                        }
+
+
+                    }
+                }
+        );
     }
 
 
