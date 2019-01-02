@@ -7,7 +7,12 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 
+import com.sample.demofactlist.ApiUtils;
 import com.sample.demofactlist.Model.FactList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FactsViewModel extends ViewModel {
 
@@ -22,8 +27,24 @@ public class FactsViewModel extends ViewModel {
     private LiveData<FactList> getUsers() {
         if (facts == null) {
             facts = new MutableLiveData<>();
-           // loadFacts();
+            loadFacts();
         }
         return facts;
+    }
+
+    private void loadFacts()
+    {
+        ApiUtils.getAPIService().getData().enqueue(new Callback<FactList>() {
+            @Override
+            public void onResponse(Call<FactList> call, Response<FactList> response) {
+                factList = response.body();
+                facts.setValue(factList);
+            }
+            @Override
+            public void onFailure(Call<FactList> call, Throwable t) {
+                // send null as a result , will handle at UI
+                facts.setValue(null);
+            }
+        });
     }
 }
