@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_list_title">18sp</dimen>
+    <dimen name="recycler_view_padding_bottom">10dp</dimen>
+
+    <dimen name="card_view_margin_left">20dp</dimen>
+    <dimen name="card_view_margin_right">20dp</dimen>
+    <dimen name="card_view_margin_top">10dp</dimen>
+
+    <dimen name="item_container_layout_padding">10dp</dimen>
+
+    <dimen name="item_description_margin_top">10dp</dimen>
+    <dimen name="item_description_margin_right">10dp</dimen>
+
+</resources>
