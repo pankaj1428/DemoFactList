@@ -11,11 +11,20 @@
         android:layout_marginLeft="@dimen/card_view_margin_left"
         android:layout_marginTop="@dimen/card_view_margin_top"
         android:layout_marginRight="@dimen/card_view_margin_right"
-        app:cardBackgroundColor="@color/colorSilver"
+        app:cardBackgroundColor="@color/colorPaleIndigo"
         app:cardElevation="@dimen/cardview_default_elevation"
         card_view:cardCornerRadius="@dimen/cardview_default_radius">
 
+        <ImageView
+
+            android:id="@+id/imageViewArrow"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end|center_vertical"
+            android:src="@drawable/right_arrow" />
+
         <RelativeLayout
+            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/item_container_layout_padding">
@@ -30,12 +39,15 @@
             <ImageView
 
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="105dp"
                 android:layout_below="@+id/title"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:src="@drawable/img_image_placeholder"
                 android:layout_marginTop="@dimen/card_view_margin_top" />
+
+
 
             <TextView
                 android:id="@+id/description"

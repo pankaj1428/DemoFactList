@@ -1,6 +1,7 @@
 package com.sample.demofactlist.Adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ public class FactAdapter extends RecyclerView.Adapter<FactAdapter.MyViewHolder> 
 
     private Context mContext;
     private ArrayList<Row> mRowList;
+    private Resources mResources;
 
     private Picasso.Builder picassoBuilder;
     private Picasso picasso;
@@ -32,6 +34,7 @@ public class FactAdapter extends RecyclerView.Adapter<FactAdapter.MyViewHolder> 
     public FactAdapter(Context context, ArrayList<Row> rows) {
         mContext = context;
         mRowList = rows;
+        mResources = context.getResources();
 
         // 10 mb for cache
         File httpCacheDirectory = new File(mContext.getCacheDir(), "demofact-cache");
@@ -67,13 +70,15 @@ public class FactAdapter extends RecyclerView.Adapter<FactAdapter.MyViewHolder> 
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
 
         Row item = mRowList.get(position);
-        myViewHolder.title.setText(item.getTitle());
-        myViewHolder.desc.setText(item.getDescription());
+        String title = item.getTitle();
+        String description = item.getDescription();
 
-        final String url = item.getImageHref();
-        picasso.load(url).into(myViewHolder.imageV);
+            myViewHolder.title.setText(title != null ? title : mResources.getString(R.string.not_available));
+            myViewHolder.desc.setText(description != null ? description : mResources.getString(R.string.not_available));
+
+            final String url = item.getImageHref();
+            picasso.load(url).placeholder(R.drawable.img_image_placeholder).resize(150, 105).centerCrop().into(myViewHolder.imageV);
     }
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, desc;
