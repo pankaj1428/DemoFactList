@@ -1,5 +1,6 @@
 package com.sample.demofactlist;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -29,10 +30,18 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private TextView errorTextView;
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // initiate progress dialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage(getResources().getString(R.string.loading_dialog));
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         recyclerView = findViewById(R.id.recycler_list);
         errorTextView = findViewById(R.id.text_error);
@@ -67,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
     // method is made public for testing
     public void initList(){
 
+        if(swipeRefreshLayout != null && !swipeRefreshLayout.isRefreshing()){
+           showDialog();
+        }
+
         EspressoIdlingResouce.increment();
 
         if(!isNetworkAvailable()){
@@ -76,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     swipeRefreshLayout.setRefreshing(false);
+                    dismissDialog();
                     recyclerView.setVisibility(View.GONE);
                     errorTextView.setVisibility(View.VISIBLE);
                     errorTextView.setText(getResources().getText(R.string.network_error));
@@ -94,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onChanged(@Nullable FactList facts) {
                         EspressoIdlingResouce.decrement();
                         swipeRefreshLayout.setRefreshing(false);
+                        dismissDialog();
                         if(facts == null){
                             recyclerView.setVisibility(View.GONE);
                             errorTextView.setVisibility(View.VISIBLE);
@@ -128,5 +143,17 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
+    }
+
+    public void showDialog(){
+        if(progressDialog != null && !progressDialog.isShowing()){
+            progressDialog.show();
+        }
+    }
+
+    public void dismissDialog(){
+        if(progressDialog != null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
     }
 }
