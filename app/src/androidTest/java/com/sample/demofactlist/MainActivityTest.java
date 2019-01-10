@@ -7,10 +7,15 @@ import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingPolicies;
 import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.not;
@@ -33,7 +39,7 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class MainActivityTest {
 
     private IdlingResource mIdlingResource = EspressoIdlingResouce.getIdlingResource();
 
@@ -56,22 +62,41 @@ public class ExampleInstrumentedTest {
         }
     }
 
-
     @Test
-    public void listSuccessStatus() {
+    public void listSuccessStatus() throws Throwable {
         // if item loaded successfully
         IdlingRegistry.getInstance().register(mIdlingResource);
-        mActivityRule.getActivity().initList();
-        onView(withId(R.id.recycler_list)).check(matches((isDisplayed())));
+        mActivityRule.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mActivityRule.getActivity().initList();
+            }
+        });
 
+        if (mActivityRule.getActivity().isNetworkAvailable()) {
+            onView(withId(R.id.recycler_list)).check(matches((isDisplayed())));
+        } else {
+            onView(withId(R.id.recycler_list)).check(matches(not(isDisplayed())));
+        }
     }
 
     @Test
-    public void listErrorStatus() {
+    public void listErrorStatus() throws Throwable {
         // if internet is switch off or item can not be fetched
         IdlingRegistry.getInstance().register(mIdlingResource);
-        mActivityRule.getActivity().initList();
-        onView(withId(R.id.recycler_list)).check(matches(not(isDisplayed())));
 
+        mActivityRule.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mActivityRule.getActivity().initList();
+
+            }
+        });
+
+        if (mActivityRule.getActivity().isNetworkAvailable()) {
+            onView(withId(R.id.text_error)).check(matches(not(isDisplayed())));
+        } else {
+            onView(withId(R.id.text_error)).check(matches((isDisplayed())));
+        }
     }
 }

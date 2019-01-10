@@ -49,19 +49,13 @@ public class MainActivity extends AppCompatActivity {
         // so that title can be updated at run time
         actionBar = getSupportActionBar();
 
-        swipeRefreshLayout =  findViewById(R.id.swipeContainer);
+        swipeRefreshLayout = findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        initList();
-                    }
-                });
+                initList();
             }
-
         });
 
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -70,32 +64,26 @@ public class MainActivity extends AppCompatActivity {
                 android.R.color.holo_red_light);
 
         initList();
-
     }
 
     // method is made public for testing
-    public void initList(){
+    public void initList() {
 
-        if(swipeRefreshLayout != null && !swipeRefreshLayout.isRefreshing()){
-           showDialog();
+        if (swipeRefreshLayout != null && !swipeRefreshLayout.isRefreshing()) {
+            showDialog();
         }
 
         EspressoIdlingResouce.increment();
 
-        if(!isNetworkAvailable()){
-            Log.e(TAG,"is Network:"+isNetworkAvailable());
+        if (!isNetworkAvailable()) {
+            Log.e(TAG, "is Network:" + isNetworkAvailable());
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(false);
-                    dismissDialog();
-                    recyclerView.setVisibility(View.GONE);
-                    errorTextView.setVisibility(View.VISIBLE);
-                    errorTextView.setText(getResources().getText(R.string.network_error));
-                }
-            });
 
+            swipeRefreshLayout.setRefreshing(false);
+            dismissDialog();
+            recyclerView.setVisibility(View.GONE);
+            errorTextView.setVisibility(View.VISIBLE);
+            errorTextView.setText(getResources().getText(R.string.network_error));
 
             EspressoIdlingResouce.decrement();
             return;
@@ -109,11 +97,10 @@ public class MainActivity extends AppCompatActivity {
                         EspressoIdlingResouce.decrement();
                         swipeRefreshLayout.setRefreshing(false);
                         dismissDialog();
-                        if(facts == null){
+                        if (facts == null) {
                             recyclerView.setVisibility(View.GONE);
                             errorTextView.setVisibility(View.VISIBLE);
-                        }
-                        else{
+                        } else {
                             recyclerView.setVisibility(View.VISIBLE);
                             errorTextView.setVisibility(View.GONE);
 
@@ -126,33 +113,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateRecyclerView(final FactList factList) {
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                actionBar.setTitle(factList.getTitle());
+        actionBar.setTitle(factList.getTitle());
 
-                factAdapter = new FactAdapter(MainActivity.this, factList.getRows());
+        factAdapter = new FactAdapter(MainActivity.this, factList.getRows());
 
-                recyclerView.setAdapter(factAdapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-            }
-        });
+        recyclerView.setAdapter(factAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
     }
 
-    private boolean isNetworkAvailable() {
+    public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
     }
 
-    public void showDialog(){
-        if(progressDialog != null && !progressDialog.isShowing()){
+    public void showDialog() {
+        if (progressDialog != null && !progressDialog.isShowing()) {
             progressDialog.show();
         }
     }
 
-    public void dismissDialog(){
-        if(progressDialog != null && progressDialog.isShowing()){
+    public void dismissDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
