@@ -7,6 +7,10 @@ import java.util.ArrayList;
 
 public class FactList {
 
+
+    // to handle exception
+    private String exception;
+
     @SerializedName("title")
     @Expose
     private String title;
@@ -29,5 +33,13 @@ public class FactList {
 
     public void setRows(ArrayList<Row> rows) {
         this.rows = rows;
+    }
+
+    public String getException() {
+        return exception;
+    }
+
+    public void setException(String exception) {
+        this.exception = exception;
     }
 }

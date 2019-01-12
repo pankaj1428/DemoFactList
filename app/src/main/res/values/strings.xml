@@ -3,4 +3,5 @@
     <string name="network_error">Please check network connection: Pull to refresh</string>
     <string name="not_available">Not available</string>
     <string name="loading_dialog">Please Wait...</string>
+    <string name="list_not_loaded">Sorry can not fetch the list</string>
 </resources>

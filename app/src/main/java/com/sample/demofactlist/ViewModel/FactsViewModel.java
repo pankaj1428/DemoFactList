@@ -10,8 +10,6 @@ import android.support.annotation.NonNull;
 import com.sample.demofactlist.ApiUtils;
 import com.sample.demofactlist.Model.FactList;
 
-import java.util.Collections;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,9 +41,13 @@ public class FactsViewModel extends ViewModel {
                 facts.setValue(factList);
             }
             @Override
-            public void onFailure(Call<FactList> call, Throwable t) {
-                // send null as a result , will handle at UI
-                facts.setValue(null);
+            public void onFailure(Call<FactList> call, Throwable throwable) {
+                // set Exception as a result , will handle at UI
+                factList = new FactList();
+                factList.setException(throwable.getMessage());
+
+                facts.setValue(factList);
+
             }
         });
     }
