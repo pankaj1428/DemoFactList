@@ -48,6 +48,9 @@ public class FactsViewModel extends ViewModel {
 
                 facts.setValue(factList);
 
+                // reassign it null so that list should reload
+                facts = null;
+
             }
         });
     }

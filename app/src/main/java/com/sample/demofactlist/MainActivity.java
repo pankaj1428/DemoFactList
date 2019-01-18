@@ -97,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
                         EspressoIdlingResouce.decrement();
                         swipeRefreshLayout.setRefreshing(false);
                         dismissDialog();
-                        if (facts == null) {
+
+                        if (facts.getException() !=  null) {
                             recyclerView.setVisibility(View.GONE);
+                            errorTextView.setText(getResources().getText(R.string.list_not_loaded));
                             errorTextView.setVisibility(View.VISIBLE);
                         } else {
                             recyclerView.setVisibility(View.VISIBLE);
