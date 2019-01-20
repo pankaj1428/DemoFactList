@@ -98,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
                         swipeRefreshLayout.setRefreshing(false);
                         dismissDialog();
 
+                        if(facts == null){
+                            recyclerView.setVisibility(View.GONE);
+                            errorTextView.setText(getResources().getText(R.string.no_data_found));
+                            errorTextView.setVisibility(View.VISIBLE);
+                            return;
+                        }
+
                         if (facts.getException() !=  null) {
                             recyclerView.setVisibility(View.GONE);
                             errorTextView.setText(getResources().getText(R.string.list_not_loaded));
